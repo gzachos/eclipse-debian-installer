@@ -127,7 +127,6 @@ then
 	exit 5
 fi
 
-exit 0
 # If execution reaches this point of the script, it means that there is a valid eclipse '.tar.gz'
 # file inside $FILEPATH. The following part of the script is the one that conducts the installation.
 

@@ -44,7 +44,7 @@ sudo ./installEclipse <absolute-path-of-directory>
 ```
 By executing the script in such a way, you have to give the __absolute__ path of the directory where the eclipse
 '_.tar.gz_' file is saved as a command line argument.
-<u>__NOTE__ that the absolute path should end with a forward slash ( __/__ )</u>.
+__NOTE that the absolute path should end with a forward slash__ ( __/__ ).
 The script will enter the directory given as an argument and will search for the '_.tar.gz_' file to be installed.<br><br>
 
 Command example:
@@ -53,6 +53,6 @@ sudo ./installEclipse /home/gzachos/Desktop/
 ```
 <br>
 In __both__ ways, if there are more than one '_.tar.gz_' files inside the specified directory, you will be prompted
-to choose the one you want to be installed.<br><br>
+just like it is shown in the screenshot below, to choose the one you want to be installed.<br><br>
 e.g.
 ![Prompt](./screenshots/photo00.png)
