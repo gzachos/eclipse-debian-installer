@@ -139,7 +139,7 @@ sudo mv ./eclipse/ /opt/
 X2="$?"
 
 # The 'eclipse.desktop' file is created
-sudo echo  "[Desktop Entry]\nName=Eclipse\nType=Application\nExec=/opt/eclipse/eclipse\nTerminal=false\nIcon=/usr/share/pixmaps/eclipse.xpm\nComment=Intergrated Development Environment\nNoDisplay=false\nCategories=Development;" > eclipse.desktop
+sudo echo -e "[Desktop Entry]\nName=Eclipse\nType=Application\nExec=/opt/eclipse/eclipse\nTerminal=false\nIcon=/usr/share/pixmaps/eclipse.xpm\nComment=Intergrated Development Environment\nNoDisplay=false\nCategories=Development;" > eclipse.desktop
 X3="$?"
 
 # The '.desktop' file is installed and then deleted
