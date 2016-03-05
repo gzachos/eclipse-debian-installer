@@ -54,5 +54,5 @@ sudo ./installEclipse /home/gzachos/Desktop/
 <br>
 In __both__ ways, if there are more than one '_.tar.gz_' files inside the specified directory, you will be prompted
 just like it is shown in the screenshot below, to choose the one you want to be installed.<br><br>
-e.g.
+e.g.<br>
 ![Prompt](./screenshots/photo00.png)
