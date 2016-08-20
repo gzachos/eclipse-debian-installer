@@ -22,7 +22,7 @@
 
 # Run the script with the following command to
 # view the program's exit code:
-# 	$ sudo ./installEclipse.sh; echo "exit code: $?";
+#       $ sudo ./installEclipse.sh; echo "exit code: $?";
 
 
 # An initial message is printed to console.
@@ -65,12 +65,13 @@ then
 else
 	# $DIRPATH is assigned the absolute path given as a command line argument.
 	DIRPATH=${1}
-	# Check if $DIRPATH begins and ends with a forward slash.
-	if [ "${DIRPATH:(-1)}" != "/" ] || [ "${DIRPATH::1}" != "/" ]
-        then
-                echo "\n***ERROR***\n${DIRPATH}: Path should begin and end with a '\'.\nScript will now exit.\n"
-                exit 2
-        fi
+	# Check if $DIRPATH ends with a forward slash.
+	last_char=$(echo ${DIRPATH} | tail -c 2)
+	if [ "${last_char}" != "/" ]
+	then
+		echo "\n***ERROR***\n${DIRPATH}: Path should end with a '/'.\nScript will now exit.\n"
+		exit 2
+	fi
 fi
 
 # Check if $DIRPATH is a valid directory.
@@ -125,6 +126,7 @@ then
 		INDEX=$((INDEX+1))
 	done
 	echo "\nChosen file: ${file}\n"
+	sleep 3
 else
 	# If $FILES holds only one filename, it's value is assigned to $FILE.
 	FILE=${FILES}
