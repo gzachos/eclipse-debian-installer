@@ -26,115 +26,128 @@
 
 
 # An initial message is printed to console.
-echo "##################################################################################\n#\t\t***  You are about to install Eclipse IDE  ***\t\t\t #\n#\t\t\t\t\t\t\t\t\t\t #\n# First, download the preferred version of Eclipse and save the \".tar.gz\" file\t #\n# inside the \"Downloads\" directory of your home directory. You can run this\t #\n# script in any directory you want by the command below:\t\t\t #\n#\tsudo ./installEclipse.sh \t\t\t\t\t\t #\n#\t\t\t(Make sure it is inside your current directory!)\t #\n#\t\t\t\t\t\t\t\t\t\t #\n# Wait until download is complete and then provide your username!!!\t\t #\n#\t\t\t\t\t\t\t\t\t\t #\n#\t NOTE: If you want, you can give the absolute path of the directory\t #\n#\t\twhere the \".tar.gz\" file is saved, as a command line argument!   #\n#\t\t\t\t\t\t\t\t\t\t #\n#\t\t*** For more information refer to README.md ***\t\t\t #\n##################################################################################\n"
-
+echo "##################################################################################"
+echo "#               ***  You are about to install Eclipse IDE ***                    #"
+echo "#                                                                                #"
+echo "# First, download the preferred version of Eclipse and save the '.tar.gz' file   #"
+echo "# inside the 'Downloads' directory of your home directory. Then execute this     #"
+echo "# script from any directory you want via the command below:                      #"
+echo "#        sudo ./installEclipse.sh                                                #"
+echo "#                 (Make sure the script exists inside your current directory!)   #"
+echo "#                                                                                #"
+echo "# In case you started downloading Eclipse after executing this script,           #"
+echo "# wait until download is complete and then provide your username!!!              #"
+echo "#                                                                                #"
+echo "#         NOTE: You can override the default directory option by providing the   #"
+echo "#               (absolute) path of the directory containing the '.tar.gz' file   #"
+echo "#               as a command line argument!                                      #"
+echo "#                                                                                #"
+echo "#               *** For more information refer to README.md ***                  #"
+echo "##################################################################################"
 
 # If no command line argument is provided.
 if [ -z "${1}" ]
 then
-	# The username inside whose 'Downloads' directory the eclipse 'tar.gz' file is saved,
-	# is requested as an input from the user and it is saved in $USERNAME.
+	# Prompt user to provide a username.
+	# The script is executed as root, so 'whoami' may be invalid.
 	echo -n "Enter your username(<username>@<host>) and press [ENTER]:\n > "
 	read USERNAME
 
-	# If $USERNAME is empty, the script exits with an exit code of "1".
+	# Check if $USERNAME is empty.
 	if [ -z "${USERNAME}" ]
 	then
 		echo  "\n***ERROR***\nUsername is empty.\nScript will now exit.\n"
 		exit 1
 	fi
 
-	# $FILEPATH gets the absolute path of the user's 'Downloads' directory assigned.
-	# (user is specified by $USERNAME)
-	FILEPATH="/home/${USERNAME}/Downloads/"
+	# $DIRPATH gets the absolute path of the user's 'Downloads' directory assigned.
+	DIRPATH="/home/${USERNAME}/Downloads/"
 else
-# On the opposite case, $FILEPATH is assigned the absolute path given as a command line argument.
-	FILEPATH=${1}
+	# $DIRPATH is assigned the absolute path given as a command line argument.
+	DIRPATH=${1}
+	# Check if $DIRPATH begins and ends with a forward slash.
+	if [ "${DIRPATH:(-1)}" != "/" ] || [ "${DIRPATH::1}" != "/" ]
+        then
+                echo "\n***ERROR***\n${DIRPATH}: Path should begin and end with a '\'.\nScript will now exit.\n"
+                exit 2
+        fi
 fi
 
-# If $FILEPATH is not a valid directory, the script exits with an exit code of "2".
-if [ ! -d "${FILEPATH}" ]
+# Check if $DIRPATH is a valid directory.
+if [ ! -d "${DIRPATH}" ]
 then
-	echo  "\n***ERROR***\n${FILEPATH}: Not a valid directory.\nScript will now exit.\n"
-	exit 2
-fi
-
-# $FILENAMES holds all the filenames inside $FILEPATH directory that begin with 'eclipse-' and end with '.tar.gz'.
-FILENAMES=$(sudo ls -l ${FILEPATH} | awk '{print $9}' | grep ^eclipse- | grep .tar.gz$ | tr "\n" "\n")
-
-# If there are no filenames complying with the previews checks, the value of $FILENAMES is emtpy and
-# the script exits with an exit code of "3".
-if [ -z "${FILENAMES}" ]
-then
-	echo  "\n***ERROR***\nThere is no '.tar.gz' file associated with Eclipse IDE inside ${FILEPATH} directory.\nScript will now exit.\n"
+	echo "\n***ERROR***\n${DIRPATH}: Not a valid directory.\nScript will now exit.\n"
 	exit 3
 fi
 
-# $FILENUM holds the number of files held in $FILENAMES
-FILENUM=0
-for x in ${FILENAMES}
-do
-	FILENUM=$((FILENUM+1))
-done
+# $FILES holds all the filenames inside $DIRPATH directory that begin with 'eclipse-' and end with '.tar.gz'.
+FILES=$(sudo ls -1 ${DIRPATH} | grep ^eclipse- | grep .tar.gz$ | tr "\n" "\n")
 
-# If there are more than one files, user is prompted to choose one.
-if [ "${FILENUM}" -gt "1" ]
+# Check if there are any filenames complying with the previous checks.
+if [ -z "${FILES}" ]
 then
-	# The existing files inside ${FILEPATH} directory are printed one every single line,
+	echo  "\n***ERROR***\nThere is no '.tar.gz' file associated with Eclipse IDE inside ${DIRPATH} directory.\nScript will now exit.\n"
+	exit 4
+fi
+
+# $FILENUM holds the number of files held in $FILES
+FILENUM=$(echo $FILES | wc -c)
+
+# If there are more than one files, prompt user to choose one.
+if [ ${FILENUM} -gt 1 ]
+then
+	# The existing files inside $DIRPATH directory are printed one every single line,
 	# including a number/index at the beginning of each line.
-	echo "\nThe following files were found inside \"${FILEPATH}\" directory:"
+	echo "\nThe following files were found inside \"${DIRPATH}\" directory:"
 	INDEX=0
-	for x in ${FILENAMES}
+	for file in ${FILES}
 	do
-		echo "[${INDEX}] ${x}"
+		echo "[${INDEX}] ${file}"
 		INDEX=$((INDEX+1))
 	done
-	# Then the user is prompted to enter the number/index of the file that wants to be installed.
+	# Prompt user to enter the number/index of the file to be installed.
 	echo -n "\nEnter the number/index of the file you want to be installed (0-$((INDEX-1))) and press [ENTER]:\n > "
 	read CHOICE
 	# if $CHOICE holds a valid number/index, the related filename is assigned to $FILE.
-	# On the opposite case, the script exits with an exit code of "4".
-	if [ "${CHOICE}" -ge "0" ] && [ "${CHOICE}" -lt "${INDEX}" ]
+	if [ ${CHOICE} -lt 0 ] || [ ${CHOICE} -ge ${INDEX} ]
 	then
-		continue
-	else
 		echo  "\n***ERROR***\nInvalid choice!\nScript will now exit.\n"
-		exit 4
+		exit 5
 	fi
 	INDEX=0
-	for x in ${FILENAMES}
+	for file in ${FILES}
 	do
-		if [ "${CHOICE}" -eq "${INDEX}" ]
+		if [ ${CHOICE} -eq ${INDEX} ]
 		then
-			FILE=${x}
+			FILE=${file}
 			break
 		fi
 		INDEX=$((INDEX+1))
 	done
-	echo "\nChosen file: ${x}\n"
+	echo "\nChosen file: ${file}\n"
 else
-# If $FILENAMES holds only one filename, it's value is assigned to $FILE.
-	FILE=${FILENAMES}
+	# If $FILES holds only one filename, it's value is assigned to $FILE.
+	FILE=${FILES}
 fi
 
 # $TYPE holds the type of the file held in $FILE
-TYPE="$(file -b ${FILEPATH}${FILE} | awk '{print $1}')"
+TYPE="$(file -b ${DIRPATH}${FILE} | awk '{print $1}')"
 
-# If the type of $FILE differs from "gzip", the script exits with an exit code of "5".
+# Check if the type of $FILE matches "gzip".
 if  [ "${TYPE}" != "gzip" ]
 then
-	echo "\n***ERROR***\nThere is no '.tar.gz.' file associated with Eclipse IDE inside ${FILEPATH} directory.\nScript will now exit.\n"
-	exit 5
+	echo "\n***ERROR***\nThere is no '.tar.gz.' file associated with Eclipse IDE inside ${DIRPATH} directory.\nScript will now exit.\n"
+	exit 6
 fi
 
 # If execution reaches this point of the script, it means that there is a valid eclipse '.tar.gz'
-# file inside $FILEPATH. The following part of the script is the one that conducts the installation.
+# file inside $DIRPATH. The following part of the script is the one that conducts the installation.
 
-# Extraction of the 'tar.gz' file in the current directory
-sudo tar -zxvf ${FILEPATH}${FILE}
+# Extract the 'tar.gz' file in the current directory.
+sudo tar -zxvf ${DIRPATH}${FILE}
 X1="$?"
 
-# The 'eclipse' directory created from the extraction above is moved to /opt/
+# Move the 'eclipse' directory created from the extraction above to /opt/
 sudo mv ./eclipse/ /opt/
 X2="$?"
 
@@ -142,14 +155,14 @@ X2="$?"
 sudo echo -e "[Desktop Entry]\nName=Eclipse\nType=Application\nExec=/opt/eclipse/eclipse\nTerminal=false\nIcon=/usr/share/pixmaps/eclipse.xpm\nComment=Intergrated Development Environment\nNoDisplay=false\nCategories=Development;" > eclipse.desktop
 X3="$?"
 
-# The '.desktop' file is installed and then deleted
+# The '.desktop' file is installed and then deleted.
 sudo desktop-file-install eclipse.desktop
 X4="$?"
 
 sudo rm -rf eclipse.desktop
 X5="$?"
 
-# A soft link of eclipse's executable file is created in /usr/local/bin/eclipse
+# A soft link of eclipse's executable file is created in /usr/local/bin/eclipse.
 sudo ln -s /opt/eclipse/eclipse /usr/local/bin/eclipse
 X6="$?"
 
@@ -162,13 +175,17 @@ X7="$?"
 SUM=$((X1+X2+X3+X4+X5+X6+X7))
 
 # Finally, feedback about the installation status is given to the user according to the value of $SUM.
-# If installation was NOT successful, the script exits with an exit code of "6".
 # Note that in UNIX-like systems, the exit code is represented as an 8-bit unsigned(!) char [1-255].
 if [ "${SUM}" -eq "0" ]
 then
-	echo "\n##################################################################################\n#\t\t\tThe installation was successful!\t\t\t #\n##################################################################################\n"
+	echo "\n##################################################################################"
+	echo   "#                        The installation was successful!                        #"
+	echo   "##################################################################################\n"
 	exit 0
 else
-	echo "\n##################################################################################\n#\t\t\tThe installation was NOT successful!\t\t\t #\n##################################################################################\n"
-	exit 6
+	echo "\n##################################################################################"
+	echo   "#                      The installation was NOT successful!                      #"
+	echo   "##################################################################################\n"
+	exit 7
 fi
+

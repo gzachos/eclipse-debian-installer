@@ -2,7 +2,7 @@ eclipse-debian-installer
 ============
 
 A Bourne Shell script that will install Eclipse IDE, after you download
-it from [eclipse.org](http://eclipse.org/downloads/?osType=linux).
+it from [eclipse.org](https://eclipse.org/downloads/eclipse-packages/?osType=linux).
 
 Operating System
 ----
