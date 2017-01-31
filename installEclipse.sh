@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #+-----------------------------------------------------------------------+
-#|               Copyright (C) 2015-2016 George Z. Zachos                |
+#|               Copyright (C) 2015-2017 George Z. Zachos                |
 #+-----------------------------------------------------------------------+
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -154,14 +154,22 @@ sudo mv ./eclipse/ /opt/
 X2="$?"
 
 # The 'eclipse.desktop' file is created
-sudo echo -e "[Desktop Entry]\nName=Eclipse\nType=Application\nExec=/opt/eclipse/eclipse\nTerminal=false\nIcon=/usr/share/pixmaps/eclipse.xpm\nComment=Intergrated Development Environment\nNoDisplay=false\nCategories=Development;" > eclipse.desktop
+distinfo=`uname -a`
+if [ "${distinfo#*Ubuntu}" == "${distinfo}" ]
+then
+	exe="Exec=/opt/eclipse/eclipse"
+else
+	# The following line solves rendering issues on Ubuntu-based distributions
+	exe="Exec=env UBUNTU_MENUPROXY=0 SWT_GTK3=0 /opt/eclipse/eclipse"
+fi
+sudo echo -e "[Desktop Entry]\nName=Eclipse\nType=Application\n${exe}\nTerminal=false\nIcon=/usr/share/pixmaps/eclipse.xpm\nComment=Intergrated Development Environment\nNoDisplay=false\nCategories=Development;" > eclipse.desktop
 X3="$?"
 
 # The '.desktop' file is installed and then deleted.
 sudo desktop-file-install eclipse.desktop
 X4="$?"
 
-sudo rm -rf eclipse.desktop
+sudo rm -f eclipse.desktop
 X5="$?"
 
 # A soft link of eclipse's executable file is created in /usr/local/bin/eclipse.
