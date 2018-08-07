@@ -1,33 +1,26 @@
-eclipse-debian-installer
-============
+# eclipse-debian-installer
 
-A Bourne Shell script that will install Eclipse IDE, after you download
+A Bourne-again Shell script that will install Eclipse IDE, after you download
 it from [eclipse.org](https://eclipse.org/downloads/eclipse-packages/?osType=linux).
 
-Operating System
-----
+## Operating System
 LINUX // Debian-based distributions<br>
 (Developed on Debian 8 Jessie)
 
-Shell
------
-- Bourne shell (sh)
+## Shell
+- Bourne-again shell (Bash)
 
-Developer
------
-George Z. Zachos
+## Developer
+[George Z. Zachos](http://cse.uoi.gr/~gzachos)
 
-License
------
-[GNU GENERAL PUBLIC LICENSE // Version 2, June 1991](LICENSE)
+## License
+[GNU GENERAL PUBLIC LICENSE Version 2, June 1991](LICENSE)
 
-Note
------
+## Note
 This script was developed in order to cover personal needs and
 it is by nomean guaranteed to work properly on every system.
 
-Execution
------
+## Execution
 There are two ways that you can execute this script.
 
  * __1st way__:
@@ -43,11 +36,11 @@ file to be installed.
 
  * __2nd way__:
 ```Shell
-sudo ./installEclipse <absolute-path-of-directory>
+sudo ./installEclipse [absolute-path-of-directory]
 ```
 This way allows you to provide the __absolute__ path of the directory containing
 the '_.tar.gz_' file as a command line argument, in order to override the default
-option. __NOTE that the absolute path should end with a forward slash__ ( __/__ ).
+option.
 <br><br>
 
 Command example:
