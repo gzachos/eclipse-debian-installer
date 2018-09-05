@@ -25,7 +25,7 @@ There are two ways that you can execute this script.
 
  * __1st way__:
 ```Shell
-sudo ./installEclipse
+sudo ./installEclipse.sh
 ```
 In order to use this way, you have to download the '_.tar.gz_' file of your
 choice from _eclipse.org_ and save it inside the __Downloads__ directory of
@@ -36,7 +36,7 @@ file to be installed.
 
  * __2nd way__:
 ```Shell
-sudo ./installEclipse [absolute-path-of-directory]
+sudo ./installEclipse.sh [absolute-path-of-directory]
 ```
 This way allows you to provide the __absolute__ path of the directory containing
 the '_.tar.gz_' file as a command line argument, in order to override the default
@@ -45,7 +45,7 @@ option.
 
 Command example:
 ```Shell
-sudo ./installEclipse /home/gzachos/Desktop/
+sudo ./installEclipse.sh /home/gzachos/Desktop/
 ```
 
 <br>
